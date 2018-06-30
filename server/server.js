@@ -5,13 +5,13 @@ var app = express();
 
 var publicPath = path.join(__dirname, '../public');
 
-var port = process.env.PORT;
+var port = process.env.PORT || 3000;
 
 
 app.use(express.static(publicPath));
 
 
 
-app.listen(3000, () => {
+app.listen(port, () => {
     console.log(`server is up on port ${port}`); 
 });
