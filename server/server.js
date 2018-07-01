@@ -16,14 +16,28 @@ var server = http.createServer(app);
 var io = socketIO(server);
 
 //  event listener in socket.io
-
-io.on('connection', (socket) => {
+io.on('connection', function(socket) {
     console.log('New user added');
 
-    socket.on('disconnect', () => {
+    socket.on('disconnect', function(){
         console.log('Disconected from the client');
     });
+
+    //  creating a listener
+    socket.on('createMessage', function(message){
+        console.log(message);
+        
+        //  this will emit the data to all the clients
+        io.emit('newMessage', {
+            to: message.to,
+            from: message.from,
+            createdAt: new Date().getTime()
+        });
+
+    });
+
 });
+
 
 
 
