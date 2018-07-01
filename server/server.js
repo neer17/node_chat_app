@@ -19,6 +19,19 @@ var io = socketIO(server);
 io.on('connection', function(socket) {
     console.log('New user added');
 
+    //  creating a listener
+    socket.emit('newMessage', {
+        from: 'Admin',
+        text: 'Welcome to chat app'
+    });
+
+    //  broadcasting an event
+    //  it will be sent to all the users but the current user
+    socket.broadcast.emit('newMessage', {
+        from: 'Admin',
+        text: 'New user joined'
+    });
+
     socket.on('disconnect', function(){
         console.log('Disconected from the client');
     });
