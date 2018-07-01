@@ -3,6 +3,8 @@ const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
+
 var app = express();
 
 var publicPath = path.join(__dirname, '../public');
@@ -20,17 +22,11 @@ io.on('connection', function(socket) {
     console.log('New user added');
 
     //  creating a listener
-    socket.emit('newMessage', {
-        from: 'Admin',
-        text: 'Welcome to chat app'
-    });
+    socket.emit('newMessage',generateMessage('Admin', 'Hi this is Admin'));
 
     //  broadcasting an event
     //  it will be sent to all the users but the current user
-    socket.broadcast.emit('newMessage', {
-        from: 'Admin',
-        text: 'New user joined'
-    });
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'New user joined'));
 
     socket.on('disconnect', function(){
         console.log('Disconected from the client');
@@ -41,11 +37,7 @@ io.on('connection', function(socket) {
         console.log(message);
         
         //  this will emit the data to all the clients
-        io.emit('newMessage', {
-            to: message.to,
-            from: message.from,
-            createdAt: new Date().getTime()
-        });
+        io.emit('newMessage', generateMessage(message.to, message.message));
 
     });
 
