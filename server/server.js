@@ -3,7 +3,7 @@ const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationDetails} = require('./utils/message');
 
 var app = express();
 
@@ -32,13 +32,21 @@ io.on('connection', function(socket) {
         console.log('Disconected from the client');
     });
 
+    //  
+
     //  creating a listener
-    socket.on('createMessage', function(message){
+    socket.on('createMessage', function(message, callback){
         console.log(message);
         
         //  this will emit the data to all the clients
-        io.emit('newMessage', generateMessage(message.to, message.message));
+        io.emit('newMessage', generateMessage(message.from, message.message));
 
+        callback('This is from the server');
+    });
+
+    //  registering a new listener for location 
+    socket.on('createLocationMessage', (coords) => {
+        io.emit('newLocationMessage', generateLocationDetails('Admin', coords.latitude, coords.longitude));
     });
 
 });
