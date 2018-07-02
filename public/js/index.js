@@ -30,9 +30,10 @@ socket.on('newLocationMessage', function(message){
     li.text(`${message.from}`);
     a.attr('href', message.url);
     li.append(a);
-    
+
     jQuery('#messages').append(li);
 });
+
 
 //  creating an event listener which will use JQuery
 
@@ -42,27 +43,40 @@ socket.on('newLocationMessage', function(message){
 jQuery('#message-form').on('submit', function(e) {
     e.preventDefault();    //  this will enforce the default functionality of refreshing of browser when a form is sumbitted
 
+    var messageTextbox = jQuery('[name=message]');
+
     socket.emit('createMessage', {
         from: 'User',
-        message: jQuery('[name=message]').val()
+        message: messageTextbox.val()
     }, function(){
-
+        //  this is for acknowledegement
+        
+        //  setting value of the textbox to '' after hitting send button
+        messageTextbox.val('');
     });
 });
 
 //  sending location 
-jQuery('#send-location').on('click', function(){
+var locationButton = jQuery('#send-location');
+locationButton.on('click', function(){
     
+    locationButton.attr('disabled', 'disabled').text('Sending Location....');
+
     if(!navigator.geolocation)
       return alert('Browser does not support location services ');
 
     navigator.geolocation.getCurrentPosition(function(position){
         
+        //  on success
+        locationButton.removeAttr('disabled').text('Send Location')
+
         socket.emit('createLocationMessage', {
             latitude: position.coords.latitude,
             longitude: position.coords.longitude
         })
     }, function(){
+        locationButton.removeAttr('disabled').text('Send Location');
+
         alert('Permission denied!');
     });  
 });
