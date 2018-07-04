@@ -1,5 +1,7 @@
 var socket = io();
 
+// const moment = require('moment');
+
         
 socket.on('connect', () => {
     console.log('Connected to the server ');
@@ -12,22 +14,25 @@ socket.on('disconnect', () => {
 
 //  creating a listener
 socket.on('newMessage', function(newMessage){
-    console.log(newMessage);
+
+    let formattedTime = moment(newMessage.createdAt).format('h:mm a');
 
     //  when the data comes from the client
     //  setting that data into the list using jQuery
     var li = jQuery('<li></li>');
-    li.text(`${newMessage.from}: ${newMessage.message}`)
+    li.text(`${newMessage.from}:  ${formattedTime} : ${newMessage.message}`)
 
     jQuery('#messages').append(li);
 });
 
 
 socket.on('newLocationMessage', function(message){
+    let formattedTime = moment(message.createdAt).format('h:mm a');
+
     var li = jQuery('<li></li>');
     var a = jQuery('<a target="_blank">My Current Position</a>');
 
-    li.text(`${message.from}`);
+    li.text(`${message.from} : ${formattedTime}`);
     a.attr('href', message.url);
     li.append(a);
 
