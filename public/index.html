@@ -7,13 +7,14 @@
 </head>
 
 <body class="chat">
-
+    
         <div class="chat__sidebar">
             <h3>People</h3>
             <div id="users"></div>
         </div>
 
         <div class="chat__main">
+
                 <ol id="messages" class="chat__messages"></ol>
                 
                 <div class="chat__footer"> 
@@ -26,6 +27,31 @@
                 </div> 
         </div>
 
+        <script id="message-template" type="text/template">
+        <li class="message">
+            <div class="message_title">
+                <h4>{{from}}</h4>
+                <span>{{createdAt}}</span>
+                </div>
+            <div class="message_body">
+            <p>{{message}}</p>
+            </div>
+            </li>
+        </script>
+
+        <script id="location-template" type="text/template">
+            <li class="message">
+                <div class="message_title">
+                    <h4>{{from}}</h4>
+                    <span>{{createdAt}}</span>
+                    </div>
+                <div class="message_body">
+                <p>{{url}}</p>
+                </div>
+                </li>
+            </script>
+    
+
    
 
     <script src="/socket.io/socket.io.js"></script>
@@ -33,6 +59,7 @@
     <script src="/js/jquery-3.3.1.min.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/moment.js"></script>
+    <script src="/js/mustache.js"></script>
 
 </body>
 </html>
