@@ -1,7 +1,21 @@
 //  this establishes a connection to socket.io for the client
 var socket = io();
 
-// const moment = require('moment');
+function scrollToBottom(){
+    //  selectors
+    var messages = jQuery('#messages');
+    var newMessage = messages.children('li:last-child');
+
+    //  heights
+    var clientHeight = messages.prop('clientHeight');
+    var scrollTop = messages.prop('scrollTop');
+    var scrollHeight = messages.prop('scrollHeight');
+    var newMessageHeight = newMessage.innerHeight();
+    var lastMessageHeight = newMessage.prev().innerHeight();
+
+    if(clientHeight + scrollHeight + newMessageHeight >= scrollHeight)
+        messages.scrollTop(scrollHeight);
+}
 
         
 socket.on('connect', () => {
@@ -29,6 +43,8 @@ socket.on('newMessage', function(newMessage){
 
     jQuery('#messages').append(html);
 
+    scrollToBottom();
+
     // //  when the data comes from the client
     // //  setting that data into the list using jQuery
     // var li = jQuery('<li></li>');
@@ -50,6 +66,8 @@ socket.on('newLocationMessage', function(message){
     });
 
     jQuery('#messages').append(html);
+
+    scrollToBottom();
 
     // var li = jQuery('<li></li>');
     // var a = jQuery('<a target="_blank">My Current Position</a>');
