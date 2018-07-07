@@ -31,15 +31,25 @@ io.on('connection', function(socket) {
     //  creating a listener
     socket.on('createMessage', function(message, callback){
         
-        //  this will emit the data to all the clients
-        io.emit('newMessage', generateMessage(message.from, message.message));
+        //  getting the current user and sending it's name along
+        //  sending the message to all the rooms of the same name 
+        var user = users.getUser(socket.id);
+
+        if(user && isRealString(message.message)){
+            io.to(user.room).emit('newMessage', generateMessage(user.name, message.message));
+        }
 
         callback('This is from the server');
     });
 
     //  registering a new listener for location 
     socket.on('createLocationMessage', (coords) => {
-        io.emit('newLocationMessage', generateLocationDetails('Admin', coords.latitude, coords.longitude));
+
+        //  sending the location to the specific room 
+        //  along with the current user name
+        var user = users.getUser(socket.id);
+
+        io.to(user.room).emit('newLocationMessage', generateLocationDetails(user.name, coords.latitude, coords.longitude));
     });
 
     //  listener for "join"
