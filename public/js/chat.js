@@ -19,7 +19,18 @@ function scrollToBottom(){
 
         
 socket.on('connect', () => {
-    console.log('Connected to the server ');
+    
+    let params = jQuery.deparam(window.location.search);
+    console.log('parameters are ', params);
+    
+    
+    //  custom event
+    socket.emit('join', params, function(err){
+        if(err)
+          alert(err);
+        else
+        console.log('No errors');
+    });
 });        
 
 socket.on('disconnect', () => {
@@ -27,6 +38,19 @@ socket.on('disconnect', () => {
     
 });
 
+
+socket.on('updateUserList', (users) => {
+    
+    //  getting the array of username in "users" 
+    //  and appending the name in the list
+    var ol = jQuery('<ol></ol>');
+
+    users.forEach((user) => {
+        ol.append(jQuery('<li></li>').text(user))
+    });
+
+    jQuery('#users').html(ol);
+});
 //  creating a listener
 socket.on('newMessage', function(newMessage){
 
@@ -44,13 +68,6 @@ socket.on('newMessage', function(newMessage){
     jQuery('#messages').append(html);
 
     scrollToBottom();
-
-    // //  when the data comes from the client
-    // //  setting that data into the list using jQuery
-    // var li = jQuery('<li></li>');
-    // li.text(`${newMessage.from}:  ${formattedTime} : ${newMessage.message}`)
-
-    // jQuery('#messages').append(li);
 });
 
 
@@ -68,15 +85,6 @@ socket.on('newLocationMessage', function(message){
     jQuery('#messages').append(html);
 
     scrollToBottom();
-
-    // var li = jQuery('<li></li>');
-    // var a = jQuery('<a target="_blank">My Current Position</a>');
-
-    // li.text(`${message.from} : ${formattedTime}`);
-    // a.attr('href', message.url);
-    // li.append(a);
-
-    // jQuery('#messages').append(li);
 });
 
 
